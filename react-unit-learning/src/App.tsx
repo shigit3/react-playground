@@ -1,4 +1,4 @@
-// 单元 1：JSX 和组件基础 - 最终练习
-import App from "./unit-01-jsx-basics/final-practice";
+// 单元 2：useState 状态管理 - 最终练习
+import App from "./unit-02-useState/final-practice";
 
 export default App;

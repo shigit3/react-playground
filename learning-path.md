@@ -214,7 +214,7 @@ react-unit-learning/
 - 多个状态的管理
 - 对象和数组状态的更新
 
-**练习：** 实现一个番茄钟计时器，支持开始、暂停、重置
+**练习：** 实现一个购物车应用，支持添加商品、修改数量、删除商品、计算总价
 
 **⚠️ 常见错误：**
 
@@ -270,7 +270,7 @@ react-unit-learning/
 - 常见场景（API 请求、订阅、定时器）
 - 与 Vue 生命周期的对比
 
-**练习：** 调用 GitHub API 获取热门仓库，实现自动刷新和本地缓存
+**练习：** 调用 GitHub API 获取热门仓库，实现自动刷新和本地缓存；或实现一个简单的倒计时器
 
 **⚠️ 常见错误：**
 
@@ -297,7 +297,7 @@ react-unit-learning/
 - forwardRef 转发引用
 - useImperativeHandle 暴露方法
 
-**练习：** 做一个代码编辑器，支持自动聚焦和滚动到指定行
+**练习：** 实现一个番茄钟计时器（综合运用 useState + useRef），支持开始、暂停、重置、工作/休息切换
 
 **⚠️ 常见错误：**
 
@@ -357,6 +357,13 @@ react-unit-learning/
 
 **练习：** 优化大数据表格（1000+ 行），实现高性能过滤和排序（用 TS）
 
+**💡 练习提示：**
+
+- 使用简单的 table 或 div 渲染即可，重点是优化逻辑
+- 用 useMemo 缓存过滤和排序结果
+- 用 useCallback 缓存事件处理函数
+- 用 React.memo 优化行组件
+
 **⚠️ 常见错误：**
 
 - 过度优化：到处用 useMemo/useCallback（大部分时候不需要）
@@ -387,6 +394,13 @@ react-unit-learning/
 
 **练习：** 做一个命令面板（类似 VS Code 的 Cmd+K），支持搜索和快捷键
 
+**💡 练习提示：**
+
+- 用 Portal 渲染模态框（挂载到 document.body）
+- 用 useEffect + addEventListener 监听键盘事件（Cmd/Ctrl + K）
+- 用 lazy + Suspense 懒加载命令列表
+- 搜索功能复用之前学过的过滤逻辑
+
 **⚠️ 常见错误：**
 
 - lazy 导入的组件没有用 Suspense 包裹
@@ -413,7 +427,13 @@ react-unit-learning/
 - 常见自定义 Hook 模式
 - TypeScript 下的 Hook 类型定义
 
-**练习：** 封装 useKeyPress（快捷键）、useDebounce、useIntersectionObserver（懒加载），全部用 TS
+**练习：** 封装 useKeyPress（快捷键）、useDebounce、useLocalStorage（本地存储），全部用 TS
+
+**💡 练习提示：**
+
+- useKeyPress：用 useEffect + addEventListener 监听键盘
+- useDebounce：用 useState + useEffect + setTimeout 实现防抖
+- useLocalStorage：用 useState + useEffect 同步本地存储，处理 JSON 序列化
 
 **⚠️ 常见错误：**
 
@@ -441,7 +461,14 @@ react-unit-learning/
 - 与 useState 的选择
 - 结合 Context 使用
 
-**练习：** 实现一个画板应用，支持撤销/重做、清空画布（用 TS）
+**练习：** 实现一个待办事项应用，支持撤销/重做、分类管理、批量操作（用 TS）
+
+**💡 练习提示：**
+
+- 用 useReducer 管理待办列表和历史记录栈
+- action 类型：ADD、DELETE、TOGGLE、UNDO、REDO、BATCH_DELETE
+- 用 TypeScript 联合类型定义 action
+- 历史记录用数组实现（past、present、future）
 
 **⚠️ 常见错误：**
 
@@ -467,8 +494,16 @@ react-unit-learning/
 - Provider 提供数据
 - useContext 消费数据
 - Context 的性能问题
+- 结合 useReducer 使用
 
 **练习：** 实现多语言切换（i18n）+ 主题切换，支持系统偏好检测
+
+**💡 练习提示：**
+
+- 创建 ThemeContext 和 I18nContext
+- 用 window.matchMedia('(prefers-color-scheme: dark)') 检测系统主题
+- 用 useLocalStorage（单元 9 封装的）持久化用户选择
+- 用 useMemo 优化 Context value，避免不必要的重新渲染
 
 **⚠️ 常见错误：**
 
@@ -498,7 +533,14 @@ react-unit-learning/
 - 懒加载（lazy + Suspense）
 - 编程式导航和路由状态（useLocation）
 
-**练习：** 做一个 Markdown 编辑器，支持实时预览、路由切换文档
+**练习：** 做一个笔记应用，支持 Markdown 实时预览、路由切换笔记、侧边栏导航
+
+**💡 练习提示：**
+
+- 使用 react-markdown 库渲染 Markdown（`npm install react-markdown`）
+- 路由结构：`/` 首页、`/notes/:id` 笔记详情、`/notes/new` 新建笔记
+- 用 useParams 获取笔记 ID，用 useSearchParams 处理搜索
+- 用 lazy + Suspense 懒加载笔记编辑器组件
 
 **备选：** TanStack Router（类型安全更好，但学习曲线稍陡）
 
@@ -561,6 +603,14 @@ react-unit-learning/
 
 **练习：** 做一个 GitHub 仓库浏览器，支持搜索、收藏、无限滚动
 
+**💡 练习提示：**
+
+- 使用 GitHub API：`https://api.github.com/search/repositories?q={keyword}`
+- 用 useQuery 获取仓库列表，queryKey: ['repos', keyword]
+- 用 useMutation 处理收藏操作（本地存储）
+- 用 useInfiniteQuery 实现无限滚动（page 参数）
+- 收藏功能结合 Zustand 或 useLocalStorage
+
 **⚠️ 常见错误：**
 
 - 忘记在根组件配置 QueryClientProvider
@@ -589,7 +639,15 @@ react-unit-learning/
 - 与 UI 组件集成
 - 动态表单和字段数组
 
-**练习：** 做一个动态问卷生成器，支持多种题型、条件显示、实时验证
+**练习：** 做一个用户注册表单，支持多步骤、动态字段、实时验证
+
+**💡 练习提示：**
+
+- 第一步：基本信息（用户名、邮箱、密码）
+- 第二步：个人资料（头像、简介、技能标签 - 用 useFieldArray）
+- 第三步：确认信息
+- 用 Zod 定义验证规则（邮箱格式、密码强度、必填项）
+- 条件显示：根据用户类型显示不同字段
 
 **⚠️ 常见错误：**
 
@@ -646,7 +704,17 @@ react-unit-learning/
 - 常用组件（Button、Input、Dialog、Select、Table）
 - 表单组件集成
 
-**练习：** 用 shadcn/ui 做一个数据看板，包含图表、表格、筛选器
+**练习：** 用 shadcn/ui 做一个任务管理看板，包含卡片、表格、对话框、下拉菜单
+
+**💡 练习提示：**
+
+- 安装 shadcn/ui：`npx shadcn@latest init`
+- 添加组件：`npx shadcn@latest add button card table dialog select`
+- 用 Card 组件展示任务卡片
+- 用 Table 组件展示任务列表
+- 用 Dialog 组件实现新建/编辑任务
+- 用 Select 组件实现状态筛选
+- 结合 React Hook Form 处理表单
 
 **⚠️ 常见错误：**
 
@@ -676,7 +744,15 @@ react-unit-learning/
 - useTransition（并发特性）
 - useDeferredValue（延迟更新）
 
-**练习：** 做一个 AI 对话界面，支持流式响应、乐观更新、打字机效果
+**练习：** 做一个聊天界面，支持消息发送、乐观更新、打字机效果
+
+**💡 练习提示：**
+
+- 用 useOptimistic 实现消息乐观更新（发送前立即显示）
+- 用 useTransition 处理消息发送，避免阻塞输入
+- 打字机效果：用 useState + useEffect + setInterval 逐字显示
+- 模拟 API 延迟：`await new Promise(resolve => setTimeout(resolve, 1000))`
+- 可选：用 ReadableStream 模拟流式响应（参考 MDN 文档）
 
 **⚠️ 常见错误：**
 
@@ -707,7 +783,7 @@ react-unit-learning/
 3. 正则表达式测试器（实时匹配高亮）
 4. Markdown 编辑器（实时预览）
 5. 代码片段管理（支持搜索、标签、收藏）
-6. API 测试工具（类似 Postman 简化版）
+6. URL 编码/解码工具
 7. 颜色选择器和转换工具
 8. 时间戳转换器
 
@@ -716,17 +792,23 @@ react-unit-learning/
 - Vite + React 19 + TypeScript
 - React Router v6（工具切换）
 - Zustand（全局配置、历史记录）
-- TanStack Query（API 测试功能）
 - React Hook Form + Zod（表单验证）
 - Tailwind CSS + shadcn/ui（UI）
-- Monaco Editor / CodeMirror（代码编辑器）
+- react-markdown（Markdown 渲染）
+
+**💡 实现提示：**
+
+- 代码高亮：使用 `<pre><code>` + CSS 即可，或用 prism-react-renderer
+- 正则测试：用 JavaScript 原生 RegExp + match 方法
+- 颜色转换：用简单的算法转换 HEX/RGB/HSL
+- 不需要复杂的代码编辑器，textarea 即可
 
 **进阶功能：**
 
-- 暗黑模式切换
-- 工具使用历史记录
-- 数据本地持久化
-- 快捷键支持（Cmd+K 命令面板）
+- 暗黑模式切换（复用单元 11 的主题系统）
+- 工具使用历史记录（Zustand + persist）
+- 数据本地持久化（localStorage）
+- 快捷键支持（复用单元 8 的命令面板）
 - 工具收藏和自定义排序
 
 **⚠️ 常见错误：**
