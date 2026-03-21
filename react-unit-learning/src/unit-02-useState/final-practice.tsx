@@ -43,20 +43,61 @@ const PRODUCTS: Product[] = [
   { id: 2, name: "iPhone 15", price: 5999, stock: 10 },
   { id: 3, name: "AirPods Pro", price: 1999, stock: 15 },
   { id: 4, name: "iPad Air", price: 4799, stock: 8 },
-  { id: 5, name: "Apple Watch", price: 2999, stock: 12 },
+  { id: 5, name: "Apple Watch", price: 2999, stock: 0 },
 ];
 
 function ShoppingCart() {
   // TODO: 定义购物车状态
-  // 提示：const [cart, setCart] = useState<CartItem[]>([]);
+  const [cart, setCart] = useState<CartItem[]>([]);
 
   // TODO: 实现功能函数
   // - addToCart(product: Product)
-  // - updateQuantity(id: number, quantity: number)
+  // - updateQuantity(id: number, delta: number)
   // - removeFromCart(id: number)
   // - clearCart()
+  const addToCart = (product: Product) => {
+    const exist = cart.find((item) => item.id === product.id);
+    if (exist) {
+      alert("已在购物车");
+      return;
+    }
+    setCart((prev) => [
+      ...prev,
+      { id: product.id, name: product.name, price: product.price, quantity: 1 },
+    ]);
+  };
+
+  const updateQuantity = (id: number, delta: number) => {
+    setCart((prev) => {
+      const c = prev.find((item) => item.id === id);
+      const p = PRODUCTS.find((item) => item.id === id);
+      if (c?.quantity === p?.stock && delta === 1) {
+        alert("数量不能超过库存");
+        return prev;
+      }
+      if (c?.quantity === 1 && delta === -1) {
+        return prev.filter((item) => item.id !== id);
+      }
+      return prev.map((item) =>
+        item.id === id ? { ...item, quantity: item.quantity + delta } : item,
+      );
+    });
+  };
+
+  const removeFromCart = (id: number) => {
+    setCart((prev) => prev.filter((item) => item.id !== id));
+  };
+
+  const clearCart = () => {
+    setCart([]);
+  };
 
   // TODO: 计算总价和总数量
+  const totalCount = cart.reduce((acc, cur) => (acc += cur.quantity), 0);
+  const totalPrice = cart.reduce(
+    (acc, cur) => (acc += cur.quantity * cur.price),
+    0,
+  );
 
   return (
     <div style={{ padding: "20px", maxWidth: "1200px", margin: "0 auto" }}>
@@ -67,12 +108,68 @@ function ShoppingCart() {
         <div style={{ flex: 1 }}>
           <h3>商品列表</h3>
           {/* TODO: 渲染商品列表 */}
+          {PRODUCTS.map((p) => {
+            const inCart = cart.some((item) => item.id === p.id);
+            return (
+              <div key={p.id}>
+                <span style={{ marginRight: "20px" }}>{p.name}</span>
+                <span style={{ marginRight: "20px" }}>{p.price}元</span>
+                <span style={{ marginRight: "20px" }}>库存{p.stock}</span>
+                <button
+                  disabled={p.stock === 0 || inCart}
+                  onClick={() => {
+                    addToCart(p);
+                  }}
+                >
+                  {p.stock === 0
+                    ? "缺货"
+                    : inCart
+                      ? "已在购物车"
+                      : "加入购物车"}
+                </button>
+              </div>
+            );
+          })}
         </div>
 
         {/* 右侧：购物车 */}
         <div style={{ flex: 1 }}>
           <h3>购物车</h3>
+          <span>总价{totalPrice}</span>
+          <span style={{ margin: "0px 20px" }}>总数量{totalCount}</span>
+          <button onClick={clearCart}>清空购物车</button>
           {/* TODO: 渲染购物车内容 */}
+          {cart.map((c) => (
+            <div key={c.id}>
+              <span style={{ marginRight: "20px" }}>{c.name}</span>
+              <span style={{ marginRight: "20px" }}>单价{c.price}元</span>
+              <span style={{ marginRight: "20px" }}>数量{c.quantity}</span>
+              <span style={{ marginRight: "20px" }}>
+                小计{c.price * c.quantity}元
+              </span>
+              <button
+                onClick={() => {
+                  updateQuantity(c.id, -1);
+                }}
+              >
+                -
+              </button>
+              <button
+                onClick={() => {
+                  updateQuantity(c.id, 1);
+                }}
+              >
+                +
+              </button>
+              <button
+                onClick={() => {
+                  removeFromCart(c.id);
+                }}
+              >
+                删除
+              </button>
+            </div>
+          ))}
         </div>
       </div>
     </div>
