@@ -152,7 +152,7 @@ react-unit-learning/
 ## 📈 学习进度
 
 - [x] 单元 1：JSX 和组件基础 ✅ (2026-03-18)
-- [ ] 单元 2：useState 状态管理
+- [x] 单元 2：useState 状态管理 ✅ (2026-03-22)
 - [ ] 单元 3：事件处理和表单
 - [ ] 单元 4：useEffect 副作用
 - [ ] 单元 5：useRef 和 DOM 操作
