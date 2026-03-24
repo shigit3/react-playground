@@ -24,11 +24,28 @@ react-unit-learning/
 ├── src/
 │   └── unit-XX-xxx/
 │       ├── SUMMARY.md           # 单元知识总结（学完后复习用）
-│       ├── stepX-xxx.tsx        # 渐进式练习代码
+│       ├── stepX-xxx.tsx        # 渐进式练习主文件（带标签切换）
+│       ├── stepX-example.tsx    # 示例代码（供参考）
+│       ├── stepX-practice.tsx   # 练习代码（你写的）
 │       ├── final-practice.tsx   # 最终综合练习
 │       └── components/          # 组件文件
 └── learning-path.md             # 👈 你现在看的文件（学习路径总览）
 ```
+
+**💡 文件组织最佳实践：**
+
+随着学习深入，单个步骤的代码会越来越复杂。为了避免示例代码和练习代码混在一起导致混乱，推荐使用以下结构：
+
+- `stepX-xxx.tsx` - 主文件，包含知识点说明和标签切换
+- `stepX-example.tsx` - 示例代码，供学习参考
+- `stepX-practice.tsx` - 练习代码，你自己编写
+
+这样的好处：
+
+- ✅ 示例和练习完全分离，不会互相干扰
+- ✅ 可以通过标签快速切换查看
+- ✅ 练习时专注于自己的代码
+- ✅ 代码清晰，易于维护和复习
 
 ### 🎯 使用场景
 
