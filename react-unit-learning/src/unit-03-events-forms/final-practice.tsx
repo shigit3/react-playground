@@ -8,7 +8,7 @@
  * - 表单处理
  */
 
-import { useState, type ChangeEvent } from "react";
+import React, { useState, type ChangeEvent } from "react";
 
 // 模拟 GitHub 仓库数据
 interface Repository {
@@ -80,32 +80,104 @@ const mockRepositories: Repository[] = [
 
 function FinalPractice() {
   // 🎯 任务 1：创建搜索关键词状态
-  // TODO: 创建 searchKeyword 状态
+
+  const [searchKeyword, setSearchKeyword] = useState("");
 
   // 🎯 任务 2：创建语言筛选状态
-  // TODO: 创建 selectedLanguage 状态（可选值：'all', 'JavaScript', 'TypeScript'）
+
+  const [selectedLanguage, setSelectedLanguage] = useState("all");
 
   // 🎯 任务 3：创建排序方式状态
-  // TODO: 创建 sortBy 状态（可选值：'name', 'stars'）
+
+  const [sortBy, setSortBy] = useState("name");
+  // ❌ 错误写法：单选框不需要单独维护多个状态
+  // const [nameRadio, setNameRadio] = useState(true);
+  // const [starsRadio, setStarsRadio] = useState(false);
+
+  // ❌ 错误写法：不需要为每个单选框写单独的处理函数
+  // function handleNameRadioChange(e: React.ChangeEvent<HTMLInputElement>) {
+  //   const { value, checked } = e.target;
+  //   setSortBy(value);
+  //   setStarsRadio((prev) => !prev);
+  //   setNameRadio(checked);
+  // }
+
+  // function handleStarsRadioChange(e: React.ChangeEvent<HTMLInputElement>) {
+  //   const { value, checked } = e.target;
+  //   setSortBy(value);
+  //   setNameRadio((prev) => !prev);
+  //   setStarsRadio(checked);
+  // }
+
+  // ✅ 正确写法：只需要一个处理函数
+  function handleSortChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setSortBy(e.target.value);
+  }
 
   // 🎯 任务 4：实现搜索处理函数
-  // TODO: 实现 handleSearchChange 函数
+
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
     // 更新搜索关键词
+    setSearchKeyword(e.target.value);
+  };
+
+  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    console.log(e.target.value);
+    setSelectedLanguage(e.target.value);
   };
 
   // 🎯 任务 5：实现过滤逻辑
-  // TODO: 根据 searchKeyword 和 selectedLanguage 过滤仓库
-  const filteredRepos = mockRepositories; // 替换为实际的过滤逻辑
+
+  // ❌ 错误写法：逻辑冗余，重复了搜索关键词的过滤
+  // const filteredRepos =
+  //   selectedLanguage === "all"
+  //     ? mockRepositories.filter(
+  //         (item) =>
+  //           item.name.includes(searchKeyword) ||
+  //           item.description.includes(searchKeyword),
+  //       )
+  //     : mockRepositories
+  //         .filter(
+  //           (item) =>
+  //             item.name.includes(searchKeyword) ||
+  //             item.description.includes(searchKeyword),
+  //         )
+  //         .filter((item) => item.language === selectedLanguage);
+
+  // ✅ 正确写法：链式调用，逻辑清晰
+  const filteredRepos = mockRepositories
+    .filter(
+      (item) =>
+        item.name.includes(searchKeyword) ||
+        item.description.includes(searchKeyword),
+    )
+    .filter(
+      (item) =>
+        selectedLanguage === "all" || item.language === selectedLanguage,
+    );
 
   // 🎯 任务 6：实现排序逻辑
-  // TODO: 根据 sortBy 对 filteredRepos 进行排序
-  const sortedRepos = filteredRepos; // 替换为实际的排序逻辑
+
+  // ❌ 错误写法：直接修改原数组，且排序逻辑不完整
+  // const sortedRepos =
+  //   sortBy === "name"
+  //     ? filteredRepos.sort()
+  //     : filteredRepos.sort((a, b) => a.stars - b.stars);
+
+  // ✅ 正确写法：先复制数组再排序，避免修改原数组
+  const sortedRepos = [...filteredRepos].sort((a, b) => {
+    if (sortBy === "name") {
+      return a.name.localeCompare(b.name);
+    }
+    return b.stars - a.stars; // b - a 让 star 多的排前面
+  });
 
   // 🎯 任务 7：实现清空搜索功能
-  // TODO: 实现 handleClearSearch 函数
+
   const handleClearSearch = () => {
     // 清空搜索关键词和语言筛选
+    setSearchKeyword("");
+    setSelectedLanguage("all");
   };
 
   return (
@@ -137,6 +209,8 @@ function FinalPractice() {
           </label>
           <div style={{ display: "flex", gap: "10px" }}>
             <input
+              value={searchKeyword}
+              onChange={handleSearchChange}
               type="text"
               placeholder="输入仓库名称或描述..."
               style={{
@@ -146,7 +220,6 @@ function FinalPractice() {
                 border: "2px solid #ddd",
                 borderRadius: "4px",
               }}
-              // TODO: 绑定 value 和 onChange
             />
             <button
               onClick={handleClearSearch}
@@ -183,7 +256,8 @@ function FinalPractice() {
               borderRadius: "4px",
               width: "200px",
             }}
-            // TODO: 绑定 value 和 onChange
+            value={selectedLanguage}
+            onChange={handleSelectChange}
           >
             <option value="all">全部</option>
             <option value="JavaScript">JavaScript</option>
@@ -215,7 +289,8 @@ function FinalPractice() {
                 name="sortBy"
                 value="name"
                 style={{ marginRight: "5px" }}
-                // TODO: 绑定 checked 和 onChange
+                checked={sortBy === "name"}
+                onChange={handleSortChange}
               />
               按名称
             </label>
@@ -231,7 +306,8 @@ function FinalPractice() {
                 name="sortBy"
                 value="stars"
                 style={{ marginRight: "5px" }}
-                // TODO: 绑定 checked 和 onChange
+                checked={sortBy === "stars"}
+                onChange={handleSortChange}
               />
               按 Star 数
             </label>
@@ -252,6 +328,7 @@ function FinalPractice() {
       >
         找到 {sortedRepos.length} 个仓库
         {/* TODO: 如果有搜索关键词，显示关键词 */}
+        <div>关键字：{searchKeyword || "无"}</div>
       </div>
 
       {/* 仓库列表 */}

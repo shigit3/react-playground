@@ -186,6 +186,112 @@
 
 ### 下一步计划
 
-学习单元 3：useEffect 副作用处理
+学习单元 3：事件处理和表单
+
+---
+
+## 单元 3：事件处理和表单
+
+**学习日期：** 2026-03-25  
+**学习时长：** 约 2 小时  
+**学习方式：** 渐进式学习（边学边练）
+
+### 学习过程
+
+#### 最终练习：GitHub 仓库搜索过滤器
+
+- 实现了实时搜索、语言筛选、排序功能
+- 使用了受控组件、事件处理、表单处理
+- 遇到问题：过滤逻辑冗余、单选框状态管理错误、排序修改原数组
+- 解决：优化了代码结构，修正了错误写法
+
+### 遇到的问题和解决
+
+1. **过滤逻辑冗余**
+   - 问题：用三元运算符写了两遍搜索过滤逻辑
+   - 原因：没有想到可以链式调用
+   - 解决：改用链式 filter，逻辑更清晰
+
+   ```tsx
+   // ❌ 错误：重复逻辑
+   const filtered =
+     language === "all"
+       ? data.filter((item) => item.name.includes(keyword))
+       : data
+           .filter((item) => item.name.includes(keyword))
+           .filter((item) => item.language === language);
+
+   // ✅ 正确：链式调用
+   const filtered = data
+     .filter((item) => item.name.includes(keyword))
+     .filter((item) => language === "all" || item.language === language);
+   ```
+
+2. **单选框状态管理错误**
+   - 问题：为每个单选框维护了单独的状态（nameRadio、starsRadio）
+   - 原因：不理解单选框只需要一个状态
+   - 解决：只用一个 sortBy 状态，checked 通过比较值来确定
+
+   ```tsx
+   // ❌ 错误：状态冗余
+   const [sortBy, setSortBy] = useState("name");
+   const [nameRadio, setNameRadio] = useState(true);
+   const [starsRadio, setStarsRadio] = useState(false);
+
+   // ✅ 正确：只需要一个状态
+   const [sortBy, setSortBy] = useState("name");
+
+   <input
+     type="radio"
+     checked={sortBy === "name"}
+     onChange={(e) => setSortBy(e.target.value)}
+   />;
+   ```
+
+3. **排序修改原数组**
+   - 问题：直接对 filteredRepos 调用 sort()
+   - 原因：忘记 sort() 会修改原数组
+   - 解决：先用展开运算符复制数组
+
+   ```tsx
+   // ❌ 错误：修改原数组
+   const sorted = filteredRepos.sort();
+
+   // ✅ 正确：先复制再排序
+   const sorted = [...filteredRepos].sort((a, b) => {
+     if (sortBy === "name") {
+       return a.name.localeCompare(b.name);
+     }
+     return b.stars - a.stars;
+   });
+   ```
+
+### 学习心得
+
+**做得好的地方：**
+
+- 能独立完成综合练习
+- 实现了所有要求的功能
+- 代码结构清晰，逻辑完整
+
+**需要改进的地方：**
+
+- 单选框的状态管理理解不够深入
+- 过滤逻辑可以更简洁
+- 要注意数组方法是否会修改原数组
+
+**与 Vue 的对比感受：**
+
+- Vue 的 v-model 更简洁，React 需要手动绑定 value 和 onChange
+- React 的单选框需要理解状态和 checked 的关系
+- React 更接近原生 JavaScript，需要更多手动控制
+
+### 掌握程度
+
+**85%** - 基本掌握，可以进入下一单元
+
+### 下一步计划
+
+学习单元 4：useEffect 副作用处理
 
 ---
