@@ -241,7 +241,7 @@ react-unit-learning/
 - 事件处理写成 `onClick={handleClick()}` 而不是 `onClick={handleClick}`
 - 忘记 `e.preventDefault()` 阻止表单默认提交
 - 受控组件忘记绑定 `value` 和 `onChange`
-- 在 JSX 里直接写箭头函数导致性能问题（每次渲染都创建新函数）
+- 在高频渲染场景（大列表、memo 组件）里直接写箭头函数可能影响性能
 
 **✅ 自检清单：**
 
@@ -499,7 +499,7 @@ react-unit-learning/
 
 **⚠️ 常见错误：**
 
-- 在 Provider 外使用 useContext（会报错）
+- 在 Provider 外使用 useContext 会返回默认值（如果默认值是 undefined 可能导致错误）
 - Context value 每次渲染都创建新对象，导致所有消费者重新渲染
 - 过度使用 Context 导致性能问题
 - 忘记给 Context 设置默认值或类型
@@ -521,9 +521,9 @@ react-unit-learning/
 - 路由跳转（Link、useNavigate、Navigate 组件）
 - 路由参数（useParams、useSearchParams）
 - 嵌套路由和 Outlet
-- 路由守卫（loader、action）
 - 懒加载（lazy + Suspense）
 - 编程式导航和路由状态（useLocation）
+- Data Router 进阶（createBrowserRouter、loader、action）
 
 **练习：** 做一个笔记应用，支持 Markdown 实时预览、路由切换笔记、侧边栏导航
 
@@ -533,8 +533,15 @@ react-unit-learning/
 - 路由结构：`/` 首页、`/notes/:id` 笔记详情、`/notes/new` 新建笔记
 - 用 useParams 获取笔记 ID，用 useSearchParams 处理搜索
 - 用 lazy + Suspense 懒加载笔记编辑器组件
+- 进阶：用 createBrowserRouter + loader 预加载笔记数据
 
 **备选：** TanStack Router（类型安全更好，但学习曲线稍陡）
+
+**💡 关于 loader/action：**
+
+- 注意：`<Routes>` 里的声明式路由不支持 loader/action
+- loader/action 需要使用 createBrowserRouter 等 Data Router API
+- 基础学习先掌握声明式路由，进阶时再学 Data Router
 
 **⚠️ 常见错误：**
 
@@ -588,7 +595,7 @@ react-unit-learning/
 - QueryClient 配置
 - useQuery 数据获取
 - useMutation 数据修改
-- 缓存策略（staleTime、cacheTime）
+- 缓存策略（staleTime、gcTime）
 - 自动重新请求
 - 乐观更新
 - 无限滚动（useInfiniteQuery）
@@ -607,7 +614,7 @@ react-unit-learning/
 
 - 忘记在根组件配置 QueryClientProvider
 - queryKey 写得不够具体，导致缓存混乱
-- 不理解 staleTime 和 cacheTime 的区别
+- 不理解 staleTime 和 gcTime 的区别（v5 已将 cacheTime 改名为 gcTime）
 - useMutation 后忘记 invalidate 相关查询
 
 **✅ 自检清单：**
@@ -710,10 +717,15 @@ react-unit-learning/
 
 **⚠️ 常见错误：**
 
-- 直接修改 components/ui 里的代码（应该通过 props 定制）
 - 忘记安装依赖（shadcn 组件可能依赖其他包）
 - 表单组件和 React Hook Form 集成方式错误
 - 主题配置不生效
+
+**💡 关于定制：**
+
+- shadcn/ui 的设计理念是"copy-paste, not install"
+- 组件源码在 components/ui 里，官方鼓励你直接修改
+- 这是它和传统组件库（如 Ant Design）的最大区别
 
 **✅ 自检清单：**
 
@@ -748,7 +760,7 @@ react-unit-learning/
 
 **⚠️ 常见错误：**
 
-- use() hook 在条件语句外使用（它可以在条件里用，这是特例）
+- 误以为 use() hook 不能在条件语句中使用（实际上它是特例，可以在条件和循环中调用）
 - useOptimistic 的回滚逻辑写错
 - useTransition 和 useDeferredValue 使用场景混淆
 - 过度使用新特性（不是所有场景都需要）
@@ -862,20 +874,30 @@ react-unit-learning/
 
 ## 附录：与 Vue 的思维转换
 
-| Vue 3            | React 19                                  |
-| ---------------- | ----------------------------------------- |
-| `ref()`          | `useState()`                              |
-| `computed()`     | `useMemo()`                               |
-| `watch()`        | `useEffect()`                             |
-| `onMounted()`    | `useEffect(() => {}, [])`                 |
-| `onUnmounted()`  | `useEffect(() => { return cleanup }, [])` |
-| `provide/inject` | `Context + useContext`                    |
-| `v-if`           | `{condition && <Component />}`            |
-| `v-for`          | `{array.map(item => <Component />)}`      |
-| `v-model`        | `value + onChange`                        |
-| `v-bind`         | `{...props}` 展开                         |
-| `composables`    | `custom hooks`                            |
-| `Teleport`       | `createPortal`                            |
+**⚠️ 重要提示：** 以下对照仅为"思路类比"，帮助理解概念，并非严格的一一对应关系。
+
+| Vue 3            | React 19                                  | 说明                                                                |
+| ---------------- | ----------------------------------------- | ------------------------------------------------------------------- |
+| `ref()`          | `useState()` / `useRef()`                 | Vue 的 ref 既可以是响应式值，也可以是 DOM 引用；React 分为两个 Hook |
+| `computed()`     | `useMemo()`                               | 计算属性 vs 记忆化值，概念较接近                                    |
+| `watch()`        | `useEffect()`                             | 思路类似但不等价，watch 有更多选项（immediate、deep、flush）        |
+| `onMounted()`    | `useEffect(() => {}, [])`                 | 组件挂载后执行                                                      |
+| `onUnmounted()`  | `useEffect(() => { return cleanup }, [])` | 组件卸载前执行清理                                                  |
+| `provide/inject` | `Context + useContext`                    | 跨组件传递数据                                                      |
+| `v-if`           | `{condition && <Component />}`            | 条件渲染                                                            |
+| `v-for`          | `{array.map(item => <Component />)}`      | 列表渲染                                                            |
+| `v-model`        | `value + onChange`                        | 双向绑定 vs 受控组件                                                |
+| `v-bind:prop`    | `prop={value}`                            | 单个属性绑定                                                        |
+| `v-bind="obj"`   | `{...props}`                              | 对象展开绑定                                                        |
+| `composables`    | `custom hooks`                            | 逻辑复用                                                            |
+| `Teleport`       | `createPortal`                            | 传送门渲染                                                          |
+
+**核心差异：**
+
+- Vue 的响应式系统是自动追踪依赖的，React 需要手动声明依赖数组
+- Vue 的 ref/reactive 可以直接修改（`.value`），React 必须通过 setState 不可变更新
+- Vue 的 watch 可以精确监听某个值的变化，React 的 useEffect 是"副作用执行时机"的概念
+- Vue 的模板语法是声明式的，React 的 JSX 是 JavaScript 表达式
 
 ## 附录：推荐资源
 
