@@ -1,4 +1,4 @@
-// 单元 3：事件处理和表单 - 最终综合练习
-import App from "./unit-03-events-forms/final-practice";
+// 单元 4：useEffect 副作用 - 最终综合练习
+import App from "./unit-04-useEffect/final-practice";
 
 export default App;

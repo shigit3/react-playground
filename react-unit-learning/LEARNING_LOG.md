@@ -295,3 +295,125 @@
 学习单元 4：useEffect 副作用处理
 
 ---
+
+## 单元 4：useEffect 副作用
+
+**学习日期：** 2026-03-26  
+**学习时长：** 约 3 小时  
+**学习方式：** 渐进式学习（边学边练）
+
+### 学习过程
+
+#### Step 1：useEffect 基础
+
+- 学习了 useEffect 的三种依赖数组
+- 练习：控制台记录、浏览器标题同步、挂载提示
+- 掌握：依赖数组的作用、执行时机
+- 理解：挂载时一定会执行一次
+
+#### Step 2：清理函数（cleanup）
+
+- 学习了为什么需要清理函数
+- 练习：倒计时器（10秒）
+- 掌握：清理定时器、清理函数的执行时机
+- 理解：依赖变化时会先执行清理函数
+
+#### Step 3：API 请求和异步操作
+
+- 学习了为什么 useEffect 不能直接是 async
+- 练习：GitHub 仓库搜索器
+- 掌握：try-catch-finally、AbortController
+- 理解：throw 会直接跳到 catch 块
+
+#### 最终练习：GitHub 用户信息面板
+
+- 实现了用户信息展示、仓库列表、自动刷新
+- 使用了 Promise.all、AbortController、触发器模式
+- 遇到问题：不理解触发器模式、AbortController 的使用场景
+- 解决：理解了用状态变化触发副作用的模式
+
+### 遇到的问题和解决
+
+1. **触发器模式（Trigger Pattern）**
+   - 问题：不知道如何在 useEffect 外部触发副作用
+   - 原因：想直接调用函数，但无法使用清理函数
+   - 解决：用状态变化触发 useEffect
+
+   ```tsx
+   // 最初的想法（有问题）
+   async function fetchInfo(controller: AbortController) {
+     // 获取数据
+   }
+   const handleRefresh = () => {
+     const controller = new AbortController();
+     fetchInfo(controller); // 无法取消
+   };
+
+   // 优化后的方案
+   const [refreshTrigger, setRefreshTrigger] = useState(0);
+
+   useEffect(() => {
+     const controller = new AbortController();
+     fetchData();
+     return () => controller.abort();
+   }, [username, refreshTrigger]);
+
+   const handleRefresh = () => {
+     setRefreshTrigger((prev) => prev + 1); // 触发 useEffect
+   };
+   ```
+
+2. **AbortController 的使用场景**
+   - 问题：不理解什么时候需要 AbortController
+   - 原因：不清楚它的作用和使用时机
+   - 解决：理解了只在有清理函数的地方才有意义
+
+   **需要 AbortController：**
+   - ✅ useEffect 中（有清理函数）
+   - ✅ 依赖变化时取消旧请求
+
+   **不需要 AbortController：**
+   - ❌ 普通函数中（没有清理函数）
+   - ❌ 定时器中（用触发器模式更简单）
+
+3. **定时器中的 AbortController**
+   - 问题：在 setInterval 中创建 controller，但无法取消
+   - 原因：每次都用同一个 controller
+   - 解决：用触发器模式，在 useEffect 中统一处理
+
+### 学习心得
+
+**做得好的地方：**
+
+- 能独立完成 API 请求和错误处理
+- 理解了 try-catch-finally 的执行流程
+- 主动使用了 AbortController（虽然有些地方不需要）
+- 善于提问，理解概念深入
+
+**需要改进的地方：**
+
+- 触发器模式是 React 特有的思维方式，需要时间适应
+- AbortController 的使用场景需要更清晰的判断
+- 从 Vue 的"直接调用方法"转换到 React 的"状态触发"需要练习
+
+**与 Vue 的对比感受：**
+
+- Vue 可以直接调用方法，React 需要通过状态触发
+- React 的 useEffect 是"副作用执行时机"，Vue 的 watch 是"监听变化"
+- React 更声明式，需要适应这种思维模式
+
+**重要收获：**
+
+- 理解了"触发器模式"：用状态变化触发副作用
+- 理解了 AbortController 只在有清理函数的地方才有意义
+- 理解了 useEffect 在挂载时一定会执行一次
+
+### 掌握程度
+
+**85%** - 基本掌握，触发器模式需要多练习
+
+### 下一步计划
+
+学习单元 5：useRef 和 DOM 操作
+
+---
