@@ -147,7 +147,8 @@ react-unit-learning/
 - [x] 单元 2：useState 状态管理 ✅ (2026-03-22)
 - [x] 单元 3：事件处理和表单 ✅ (2026-03-25)
 - [x] 单元 4：useEffect 副作用 ✅ (2026-03-26)
-- [ ] 单元 5：useRef 和 DOM 操作
+- [x] 单元 5：useRef 和 DOM 操作 ✅ (2026-04-01)
+- [ ] 单元 6：TypeScript 集成
 - [ ] 单元 6：TypeScript 集成
 - [ ] 单元 7：useMemo 和 useCallback
 - [ ] 单元 8：组件进阶模式
