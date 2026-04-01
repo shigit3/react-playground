@@ -149,7 +149,6 @@ react-unit-learning/
 - [x] 单元 4：useEffect 副作用 ✅ (2026-03-26)
 - [x] 单元 5：useRef 和 DOM 操作 ✅ (2026-04-01)
 - [ ] 单元 6：TypeScript 集成
-- [ ] 单元 6：TypeScript 集成
 - [ ] 单元 7：useMemo 和 useCallback
 - [ ] 单元 8：组件进阶模式
 - [ ] 单元 9：自定义 Hooks
