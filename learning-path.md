@@ -312,7 +312,7 @@ react-unit-learning/
 **目标：** 类型安全的 React 开发（从这里开始用 TS 写代码）
 
 - 组件 Props 类型定义（interface vs type）
-- 事件类型（ChangeEvent、MouseEvent、FormEvent）
+- 事件类型（ChangeEvent、MouseEvent、SubmitEvent）
 - useState 泛型
 - useRef 泛型
 - children 类型（ReactNode、ReactElement）
